@@ -4,7 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Club Creativo</title>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <meta name="google-site-verification" content="Z5HJQcDRQDhrJngEYSC6rLJ-1LjFEUgXdJjL_JUYjCA" />
+  <meta name="description" content="Club Creativo by Mica - Papelería personalizada, diseños curriculares, decoración para cumpleaños, kits para docentes y agendas. Lomas de Zamora, Buenos Aires." />
+  <meta name="keywords" content="papelería personalizada, diseño curricular, cumpleaños, kits docentes, agendas, Lomas de Zamora, club creativo" />
   <style>
     :root {
       --bg: #faf8f5;
@@ -848,6 +850,9 @@
 </head>
 <body>
 
+  <!-- HEARTS ANIMATION -->
+  <div id="heartsContainer" style="position:fixed;inset:0;pointer-events:none;z-index:99999;overflow:hidden;"></div>
+
   <div class="cursor" id="cursor"></div>
   <div class="cursor-ring" id="cursorRing"></div>
 
@@ -1353,6 +1358,52 @@
     calcBtn.addEventListener('click', calcShipping);
     calcBtn.addEventListener('touchend', e => { e.preventDefault(); calcShipping(); });
     cpInput.addEventListener('keydown', e => { if (e.key === 'Enter') calcShipping(); });
+
+    // Hearts animation on load
+    (function() {
+      const container = document.getElementById('heartsContainer');
+      const hearts = ['💜','💜','🤍','💜','✨','💜','🩷','💜'];
+      const total = 35;
+
+      function createHeart() {
+        const el = document.createElement('div');
+        const emoji = hearts[Math.floor(Math.random() * hearts.length)];
+        el.textContent = emoji;
+        const size = Math.random() * 24 + 14;
+        const startX = Math.random() * 100;
+        const duration = Math.random() * 3 + 2.5;
+        const delay = Math.random() * 2.5;
+        const sway = (Math.random() - 0.5) * 120;
+        el.style.cssText = `
+          position: absolute;
+          font-size: ${size}px;
+          left: ${startX}vw;
+          bottom: -60px;
+          opacity: 0;
+          animation: floatHeart ${duration}s ${delay}s ease-in forwards;
+          --sway: ${sway}px;
+        `;
+        container.appendChild(el);
+        setTimeout(() => el.remove(), (duration + delay) * 1000 + 500);
+      }
+
+      // Add keyframes
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes floatHeart {
+          0%   { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+          10%  { opacity: 1; }
+          80%  { opacity: 0.8; }
+          100% { transform: translateY(-110vh) translateX(var(--sway)) rotate(20deg); opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+
+      // Launch hearts
+      for (let i = 0; i < total; i++) {
+        setTimeout(createHeart, i * 80);
+      }
+    })();
 
   </script>
 </body>
