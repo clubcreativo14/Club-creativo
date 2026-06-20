@@ -31,10 +31,10 @@
       color: var(--text);
       font-family: 'Quicksand', sans-serif;
       overflow-x: hidden;
-      cursor: none;
     }
 
-    /* Custom cursor */
+    /* Custom cursor - solo en desktop */
+    @media (hover: hover) {
     .cursor {
       width: 12px; height: 12px;
       background: var(--lilac-deep);
@@ -54,6 +54,7 @@
       z-index: 9998;
       transform: translate(-50%, -50%);
       transition: width 0.2s, height 0.2s;
+    }
     }
 
     /* NAV */
@@ -851,7 +852,7 @@
 <body>
 
   <!-- HEARTS ANIMATION -->
-  <div id="heartsContainer" style="position:fixed;inset:0;pointer-events:none;z-index:99999;overflow:hidden;"></div>
+  <div id="heartsContainer" style="position:fixed;inset:0;pointer-events:none;z-index:100;overflow:hidden;"></div>
 
   <div class="cursor" id="cursor"></div>
   <div class="cursor-ring" id="cursorRing"></div>
