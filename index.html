@@ -635,7 +635,20 @@ if(isAdmin())document.body.classList.add('admin-mode');
 const PROD_KEY='cc_productos';
 let productos=[],carrito=[],filtro='todos';
 function loadProds(){try{productos=JSON.parse(localStorage.getItem(PROD_KEY)||'[]');}catch(e){productos=[];}}
-function saveProds(){try{localStorage.setItem(PROD_KEY,JSON.stringify(productos));}catch(e){alert('Sin espacio.');}}
+function saveProds(){
+  try{
+    localStorage.setItem(PROD_KEY,JSON.stringify(productos));
+  }catch(e){
+    // Si no hay espacio, intentar quitar fotos de productos viejos
+    const sinFotos=productos.map(p=>({...p,foto:''}));
+    try{
+      localStorage.setItem(PROD_KEY,JSON.stringify(sinFotos));
+      alert('Producto guardado, pero sin foto (espacio lleno). Para liberar espacio, eliminá productos viejos.');
+    }catch(e2){
+      alert('Sin espacio en el dispositivo. Intentá borrar algunos productos primeros.');
+    }
+  }
+}
 function fmtPrice(n){return '$'+Number(n).toLocaleString('es-AR');}
 function renderTienda(){
   loadProds();
@@ -688,7 +701,24 @@ document.getElementById('prodGuardar').addEventListener('click',()=>{
     document.getElementById('prodMsg').textContent='✅ Guardado!';
     setTimeout(()=>document.getElementById('prodMsg').textContent='',2000);
   };
-  if(file){const r=new FileReader();r.onload=e=>save(e.target.result);r.readAsDataURL(file);}
+  if(file){
+    const compressImg=(f,maxW,maxH,quality)=>new Promise(res=>{
+      const r2=new FileReader();
+      r2.onload=ev=>{
+        const img=new Image();
+        img.onload=()=>{
+          let w=img.width,h=img.height;
+          if(w>maxW||h>maxH){const s=Math.min(maxW/w,maxH/h);w=Math.round(w*s);h=Math.round(h*s);}
+          const c=document.createElement('canvas');c.width=w;c.height=h;
+          c.getContext('2d').drawImage(img,0,0,w,h);
+          res(c.toDataURL('image/jpeg',quality));
+        };
+        img.src=ev.target.result;
+      };
+      r2.readAsDataURL(f);
+    });
+    compressImg(file,600,600,0.65).then(dataUrl=>save(dataUrl));
+  }
   else save(null);
 });
 function resetForm(){['editId','prodNombre','prodPrecio','prodLink'].forEach(id=>document.getElementById(id).value='');document.getElementById('prodFoto').value='';document.getElementById('prodCancelar').style.display='none';}
@@ -753,7 +783,35 @@ document.getElementById('fondosUp').addEventListener('click',()=>{
   const cats=document.getElementById('fondosCats').value.split(',').map(s=>s.trim().toLowerCase()).filter(Boolean);
   if(!files.length||!cats.length){document.getElementById('fondosMsg').textContent='Elegí imágenes y escribí categorías.';return;}
   document.getElementById('fondosMsg').textContent='Subiendo...';let n=0;
-  files.forEach(f=>{const r=new FileReader();r.onload=e=>{fondosItems.unshift({id:'f'+Date.now()+'_'+n,src:e.target.result,cats,created:Date.now()});n++;saveFondos();if(n===files.length){document.getElementById('fondosMsg').textContent=n+' fondo(s) subido(s) ✅';document.getElementById('fondosFile').value='';renderFondos();}};r.readAsDataURL(f);});
+  const compressFondo=(f)=>new Promise(res=>{
+    const r2=new FileReader();
+    r2.onload=ev=>{
+      const img=new Image();
+      img.onload=()=>{
+        let w=img.width,h=img.height;
+        const maxW=480,maxH=800;
+        if(w>maxW||h>maxH){const s=Math.min(maxW/w,maxH/h);w=Math.round(w*s);h=Math.round(h*s);}
+        const c=document.createElement('canvas');c.width=w;c.height=h;
+        c.getContext('2d').drawImage(img,0,0,w,h);
+        res(c.toDataURL('image/jpeg',0.65));
+      };
+      img.src=ev.target.result;
+    };
+    r2.readAsDataURL(f);
+  });
+  let processed=0;
+  files.forEach(f=>{
+    compressFondo(f).then(dataUrl=>{
+      fondosItems.unshift({id:'f'+Date.now()+'_'+processed,src:dataUrl,cats,created:Date.now()});
+      processed++;
+      saveFondos();
+      if(processed===files.length){
+        document.getElementById('fondosMsg').textContent=processed+' fondo(s) subido(s) ✅';
+        document.getElementById('fondosFile').value='';
+        renderFondos();
+      }
+    });
+  });
 });
 document.getElementById('fondosQ').oninput=renderFondos;
 
