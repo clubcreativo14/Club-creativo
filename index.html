@@ -247,26 +247,6 @@
     .calc-result.error{background:#fff0f0;border-color:#ffb3b3;padding:1rem 1.2rem;}
     .calc-result.error p{color:#c0392b;font-size:.85rem;font-weight:600;}
     .calc-note{font-size:.72rem;color:var(--text-soft);line-height:1.5;margin-top:.8rem;}
-    .fondos-search-row{display:flex;gap:.8rem;margin-bottom:1rem;}
-    .fondos-search-row input{flex:1;padding:.7rem 1rem;border:1.5px solid rgba(196,168,232,.4);border-radius:50px;font-family:'Quicksand',sans-serif;font-size:.9rem;font-weight:600;color:var(--text);background:var(--white);outline:none;}
-    .fondos-chips{display:flex;gap:8px;flex-wrap:wrap;padding:4px 0 12px;}
-    .fondos-chip{border:1.5px solid rgba(196,168,232,.4);background:var(--white);color:var(--text);padding:6px 14px;border-radius:50px;cursor:pointer;font-family:'Quicksand',sans-serif;font-size:.85rem;font-weight:600;transition:all .2s;touch-action:manipulation;}
-    .fondos-chip.on{background:var(--lilac-deep);color:#fff;border-color:var(--lilac-deep);}
-    .fondos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-top:8px;}
-    .fondos-item{background:var(--white);border:1.5px solid rgba(196,168,232,.2);border-radius:14px;overflow:hidden;cursor:pointer;transition:transform .2s,box-shadow .2s;}
-    .fondos-item:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(124,77,186,.15);}
-    .fondos-item img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;}
-    .fondos-item div{padding:6px 10px;font-size:.8rem;color:var(--text-soft);font-weight:600;}
-    .fondos-empty{color:var(--text-soft);text-align:center;padding:40px 0;font-weight:600;}
-    .fondos-panel{background:var(--bg2);border-radius:16px;padding:1.2rem;margin-bottom:1.5rem;border:1.5px solid rgba(196,168,232,.25);display:none;}
-    .admin-mode .fondos-panel{display:block;}
-    .fondos-panel .fadmin-input{width:100%;padding:.65rem 1rem;border:1.5px solid rgba(196,168,232,.4);border-radius:50px;font-family:'Quicksand',sans-serif;font-size:.88rem;color:var(--text);background:var(--white);outline:none;margin-top:8px;}
-    .fondos-modal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;padding:16px;z-index:500;}
-    .fondos-modal.open{display:flex;}
-    .fondos-modal-inner{background:var(--white);border-radius:20px;max-width:480px;width:100%;padding:16px;max-height:90vh;overflow:auto;}
-    .fondos-modal-inner img{width:100%;max-height:55vh;object-fit:contain;border-radius:12px;}
-    .modal-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
-    .modal-btns button{padding:8px 14px;border-radius:50px;font-family:'Quicksand',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer;touch-action:manipulation;}
     @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
     @keyframes spin{to{transform:rotate(360deg)}}
     @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
@@ -306,7 +286,6 @@
   <button class="drawer-link" onclick="showPage('tienda');closeDrawer()"><span class="dl-icon">🛍️</span> Tienda</button>
   <button class="drawer-link" onclick="showPage('galeria');closeDrawer()"><span class="dl-icon">🖼️</span> Galería</button>
   <button class="drawer-link" onclick="showPage('envios');closeDrawer()"><span class="dl-icon">🚚</span> Envíos</button>
-  <button class="drawer-link" onclick="showPage('fondos');closeDrawer()"><span class="dl-icon">🌸</span> Fondos</button>
   <div class="drawer-section-label">Contacto</div>
   <a href="https://wa.me/5491130520901" target="_blank" class="drawer-link"><span class="dl-icon">💬</span> WhatsApp</a>
   <a href="https://instagram.com/club_creativo12" target="_blank" class="drawer-link"><span class="dl-icon">📸</span> @club_creativo12</a>
@@ -320,7 +299,6 @@
     <li><a onclick="showPage('tienda')">Tienda</a></li>
     <li><a onclick="showPage('galeria')">Galería</a></li>
     <li><a onclick="showPage('envios')">Envíos</a></li>
-    <li><a onclick="showPage('fondos')">Fondos</a></li>
     <li><a href="https://wa.me/5491130520901" target="_blank" class="nav-cta">Pedir ahora</a></li>
   </ul>
   <button class="hamburger" id="hamburgerBtn"><span></span><span></span><span></span></button>
@@ -450,6 +428,10 @@
       <button class="btn-secondary" id="prodCancelar" style="display:none">Cancelar</button>
     </div>
     <p id="prodMsg" style="font-size:.8rem;color:var(--text-soft);margin-top:6px"></p>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px solid rgba(196,168,232,.2);flex-wrap:wrap;gap:6px">
+      <span id="espacioIndicator" style="font-size:.75rem;color:var(--text-soft)">💾 calculando...</span>
+      <button id="btnLiberarEspacio" style="background:none;border:1.5px solid rgba(196,168,232,.4);color:var(--lilac-dark);border-radius:50px;padding:3px 10px;font-size:.75rem;font-weight:700;cursor:pointer;font-family:'Quicksand',sans-serif">♻️ Comprimir fotos</button>
+    </div>
   </div>
 
   <!-- Banner descuento por cantidad -->
@@ -591,44 +573,6 @@
   <footer><div><div class="footer-logo">Club<span>●</span>Creativo</div><p style="margin-top:.4rem">📍 Lomas de Zamora, Buenos Aires</p></div><p>© 2026 💜</p><div class="footer-links"><a href="https://instagram.com/club_creativo12" target="_blank">📸 Instagram</a><a href="https://wa.me/5491130520901" target="_blank">💬 WhatsApp</a></div></footer>
 </div>
 
-<!-- FONDOS -->
-<div class="page" id="page-fondos">
-  <div style="padding:5.5rem 3rem">
-    <p class="section-label">✦ Fondos de pantalla</p>
-    <h2 class="section-title">Descargá fondos únicos 🌸</h2>
-    <div class="fondos-panel" id="fondosPanel">
-      <b style="font-family:'Nunito',sans-serif">Subir fondos</b>
-      <input type="text" class="fadmin-input" id="fondosCats" placeholder="Categorías separadas por coma (ej: lila, flores)" style="width:100%;padding:.65rem 1rem;border:1.5px solid rgba(196,168,232,.4);border-radius:50px;font-family:'Quicksand',sans-serif;font-size:.88rem;color:var(--text);background:var(--white);outline:none;margin-top:8px"/>
-      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center">
-        <input type="file" id="fondosFile" accept="image/*" multiple style="font-size:.82rem"/>
-        <button class="btn-primary" id="fondosUp">Subir</button>
-      </div>
-      <p id="fondosMsg" style="font-size:.8rem;color:var(--text-soft);margin-top:6px"></p>
-    </div>
-    <div class="fondos-search-row">
-      <input type="text" id="fondosQ" placeholder="Buscar fondos..."/>
-    </div>
-    <div class="fondos-chips" id="fondosChips"></div>
-    <div class="fondos-grid" id="fondosGrid"></div>
-    <div class="fondos-empty" id="fondosEmpty" style="display:none">Todavía no hay fondos en esta categoría. 💜</div>
-  </div>
-  <footer><div><div class="footer-logo">Club<span>●</span>Creativo</div></div><p>© 2026 💜</p><div class="footer-links"><a href="https://instagram.com/club_creativo12" target="_blank">📸 Instagram</a><a href="https://wa.me/5491130520901" target="_blank">💬 WhatsApp</a></div></footer>
-</div>
-
-<!-- Modal fondos -->
-<div class="fondos-modal" id="fondosModal">
-  <div class="fondos-modal-inner">
-    <img id="fondosModalImg" alt=""/>
-    <div id="fondosModalCats" style="color:var(--text-soft);font-size:.78rem;margin:8px 0"></div>
-    <div class="modal-btns">
-      <button class="btn-primary" id="fondosDlPhone">📱 Celular</button>
-      <button class="btn-secondary" id="fondosDlDesktop">💻 Compu</button>
-      <button class="btn-secondary" id="fondosDlOrig">Original</button>
-      <button class="btn-secondary" id="fondosDel" style="display:none;border-color:#e74c3c;color:#e74c3c">Borrar</button>
-      <button class="btn-secondary" id="fondosClose">✕ Cerrar</button>
-    </div>
-  </div>
-</div>
 
 <button class="cart-fab" id="cartBtn">🛒 <span id="cartCount">0</span> · $<span id="cartTotal">0</span></button>
 <div class="cart-modal" id="cartModal">
@@ -650,7 +594,7 @@ const cursor=document.getElementById('cursor'),ring=document.getElementById('cur
 let mx=0,my=0,rx=0,ry=0;
 document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
 (function animRing(){rx+=(mx-rx)*.14;ry+=(my-ry)*.14;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing);})();
-document.querySelectorAll('a,button,.card,.gallery-item,.fondos-item,.tienda-card').forEach(el=>{
+document.querySelectorAll('a,button,.card,.gallery-item,.tienda-card').forEach(el=>{
   el.addEventListener('mouseenter',()=>{cursor.style.width='20px';cursor.style.height='20px';ring.style.width='48px';ring.style.height='48px';});
   el.addEventListener('mouseleave',()=>{cursor.style.width='12px';cursor.style.height='12px';ring.style.width='34px';ring.style.height='34px';});
 });
@@ -723,8 +667,8 @@ function calcShipping(){
 // ADMIN MODE
 const ADMIN_KEY='clubcreativo_admin';
 const isAdmin=()=>localStorage.getItem(ADMIN_KEY)==='si';
-function activarAdmin(){localStorage.setItem(ADMIN_KEY,'si');document.body.classList.add('admin-mode');renderTienda();if(typeof renderFondos!=='undefined')renderFondos();alert('Modo admin activado ✅ Para salir, mantené presionado el logo 3 seg.');}
-function desactivarAdmin(){localStorage.removeItem(ADMIN_KEY);document.body.classList.remove('admin-mode');renderTienda();if(typeof renderFondos!=='undefined')renderFondos();alert('Modo admin desactivado.');}
+function activarAdmin(){localStorage.setItem(ADMIN_KEY,'si');document.body.classList.add('admin-mode');renderTienda();alert('Modo admin activado ✅ Para salir, mantené presionado el logo 3 seg.');}
+function desactivarAdmin(){localStorage.removeItem(ADMIN_KEY);document.body.classList.remove('admin-mode');renderTienda();alert('Modo admin desactivado.');}
 
 // Activar con toque largo (1.5s) en el logo del nav
 let logoTimer=null;
@@ -756,16 +700,42 @@ function loadProds(){try{productos=JSON.parse(localStorage.getItem(PROD_KEY)||'[
 function saveProds(){
   try{
     localStorage.setItem(PROD_KEY,JSON.stringify(productos));
+    mostrarEspacio();
   }catch(e){
-    // Si no hay espacio, intentar quitar fotos de productos viejos
-    const sinFotos=productos.map(p=>({...p,foto:''}));
+    // Intento 2: sin fotos de fondos (liberar otras keys)
+    try{localStorage.removeItem('clubcreativo_fondos_cache');}catch(_){}
+    try{
+      localStorage.setItem(PROD_KEY,JSON.stringify(productos));
+      mostrarEspacio();return;
+    }catch(e2){}
+    // Intento 3: quitar fotos extras (dejar solo 1 por producto)
+    const menosfotos=productos.map(p=>({...p,fotos:p.fotos?p.fotos.slice(0,1):[], foto:p.foto||''}));
+    try{
+      localStorage.setItem(PROD_KEY,JSON.stringify(menosfotos));
+      productos=menosfotos;
+      alert('⚠️ Se guardó con menos fotos por falta de espacio. Para agregar más fotos, eliminá productos viejos primero.');
+      mostrarEspacio();return;
+    }catch(e3){}
+    // Intento 4: sin fotos
+    const sinFotos=productos.map(p=>({...p,fotos:[],foto:''}));
     try{
       localStorage.setItem(PROD_KEY,JSON.stringify(sinFotos));
-      alert('Producto guardado, pero sin foto (espacio lleno). Para liberar espacio, eliminá productos viejos.');
-    }catch(e2){
-      alert('Sin espacio en el dispositivo. Intentá borrar algunos productos primeros.');
+      productos=sinFotos;
+      alert('❌ Sin espacio para fotos. El producto se guardó sin imagen. Eliminá productos viejos para liberar espacio.');
+      mostrarEspacio();
+    }catch(e4){
+      alert('❌ Sin espacio. No se pudo guardar. Abrí el admin y eliminá algunos productos viejos.');
     }
   }
+}
+function mostrarEspacio(){
+  try{
+    let total=0;for(const k in localStorage)if(localStorage.hasOwnProperty(k))total+=localStorage[k].length;
+    const kb=Math.round(total/1024);
+    const pct=Math.round(kb/5000*100);
+    const el=document.getElementById('espacioIndicator');
+    if(el){el.textContent='💾 '+kb+'KB usados ('+pct+'%)';el.style.color=pct>80?'#d63031':pct>60?'#e17055':'var(--text-soft)';}
+  }catch(_){}
 }
 function fmtPrice(n){return '$'+Number(n).toLocaleString('es-AR');}
 function makeCarousel(fotos, nombre){
@@ -859,6 +829,30 @@ const compressImg=(f,maxW,maxH,quality)=>new Promise(res=>{
   };
   r2.readAsDataURL(f);
 });
+// Recomprimir base64 ya guardado a menor calidad
+function recompressB64(b64,maxW,maxH,quality){return new Promise(res=>{
+  const img=new Image();
+  img.onload=()=>{
+    let w=img.width,h=img.height;
+    if(w>maxW||h>maxH){const s=Math.min(maxW/w,maxH/h);w=Math.round(w*s);h=Math.round(h*s);}
+    const c=document.createElement('canvas');c.width=w;c.height=h;
+    c.getContext('2d').drawImage(img,0,0,w,h);
+    res(c.toDataURL('image/jpeg',quality));
+  };
+  img.onerror=()=>res(b64);
+  img.src=b64;
+});}
+async function emergencyCompress(){
+  // Recomprimir todas las fotos a calidad muy baja para liberar espacio
+  for(const p of productos){
+    if(p.fotos&&p.fotos.length){
+      const nuevas=[];for(const f of p.fotos)nuevas.push(await recompressB64(f,220,220,0.25));
+      p.fotos=nuevas;p.foto=nuevas[0]||'';
+    } else if(p.foto){
+      p.foto=await recompressB64(p.foto,220,220,0.25);
+    }
+  }
+}
 
 // Preview de fotos seleccionadas
 document.getElementById('prodFoto').addEventListener('change',function(){
@@ -886,7 +880,7 @@ document.getElementById('prodGuardar').addEventListener('click',async()=>{
   let fotos=[];
   if(files.length){
     for(const f of files){
-      const data=await compressImg(f,600,600,0.65);
+      const data=await compressImg(f,280,280,0.3);
       fotos.push(data);
     }
   }
@@ -942,6 +936,19 @@ document.getElementById('adminOpcionAdd').addEventListener('click',()=>{
   renderAdminOpciones(cur);
 });
 renderAdminOpciones([]);
+mostrarEspacio();
+
+// Botón comprimir fotos existentes
+document.getElementById('btnLiberarEspacio').addEventListener('click',async()=>{
+  const btn=document.getElementById('btnLiberarEspacio');
+  btn.textContent='⏳ Comprimiendo...';btn.disabled=true;
+  loadProds();
+  await emergencyCompress();
+  saveProds();
+  renderTienda();
+  btn.textContent='✅ Listo';btn.disabled=false;
+  setTimeout(()=>{btn.textContent='♻️ Comprimir fotos';},2000);
+});
 
 function resetForm(){
   ['editId','prodNombre','prodPrecio','prodPrecioOferta','prodLink','prodDesc'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
@@ -1102,67 +1109,6 @@ document.getElementById('cartComprar').addEventListener('click',()=>{
   window.open('https://wa.me/5491130520901?text='+msg,'_blank');
 });
 
-// FONDOS
-const FONDOS_KEY='clubcreativo_fondos';
-let fondosItems=[],fondosCat='Todos',fondosCurItem=null;
-function loadFondos(){try{fondosItems=JSON.parse(localStorage.getItem(FONDOS_KEY)||'[]');}catch(e){fondosItems=[];}}
-function saveFondos(){try{localStorage.setItem(FONDOS_KEY,JSON.stringify(fondosItems));}catch(e){alert('Sin espacio.');}}
-function renderFondos(){
-  loadFondos();
-  const all=[...new Set(fondosItems.flatMap(i=>i.cats||[]))].sort();
-  const chips=document.getElementById('fondosChips');chips.innerHTML='';
-  ['Todos',...all].forEach(c=>{const b=document.createElement('button');b.className='fondos-chip'+(c===fondosCat?' on':'');b.textContent=c;b.onclick=()=>{fondosCat=c;renderFondos();};chips.appendChild(b);});
-  const q=document.getElementById('fondosQ').value.toLowerCase();
-  const list=fondosItems.filter(i=>(fondosCat==='Todos'||(i.cats||[]).includes(fondosCat))&&(!q||(i.cats||[]).join(' ').toLowerCase().includes(q)));
-  const grid=document.getElementById('fondosGrid');grid.innerHTML='';
-  list.forEach(i=>{const d=document.createElement('div');d.className='fondos-item';const img=document.createElement('img');img.src=i.src;img.loading='lazy';const label=document.createElement('div');label.textContent=(i.cats||[]).join(' · ');d.append(img,label);d.onclick=()=>openFondosModal(i);grid.appendChild(d);});
-  document.getElementById('fondosEmpty').style.display=list.length?'none':'block';
-  document.getElementById('fondosDel').style.display=isAdmin()?'':'none';
-}
-function openFondosModal(i){fondosCurItem=i;document.getElementById('fondosModalImg').src=i.src;document.getElementById('fondosModalCats').textContent=(i.cats||[]).join(' · ');document.getElementById('fondosDel').style.display=isAdmin()?'':'none';document.getElementById('fondosModal').classList.add('open');}
-document.getElementById('fondosClose').onclick=()=>document.getElementById('fondosModal').classList.remove('open');
-document.getElementById('fondosModal').onclick=e=>{if(e.target===document.getElementById('fondosModal'))document.getElementById('fondosModal').classList.remove('open');};
-async function fitAndDownload(src,w,h,name){const img=await new Promise((res,rej)=>{const m=new Image();m.onload=()=>res(m);m.onerror=rej;m.src=src;});const c=document.createElement('canvas');c.width=w;c.height=h;const s=Math.max(w/img.width,h/img.height);const dw=img.width*s,dh=img.height*s;c.getContext('2d').drawImage(img,(w-dw)/2,(h-dh)/2,dw,dh);c.toBlob(blob=>{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();},'image/jpeg',.92);}
-document.getElementById('fondosDlPhone').onclick=()=>{if(fondosCurItem)fitAndDownload(fondosCurItem.src,1080,1920,'fondo-celular.jpg');};
-document.getElementById('fondosDlDesktop').onclick=()=>{if(fondosCurItem)fitAndDownload(fondosCurItem.src,1920,1080,'fondo-compu.jpg');};
-document.getElementById('fondosDlOrig').onclick=()=>{if(!fondosCurItem)return;const a=document.createElement('a');a.href=fondosCurItem.src;a.download='fondo.jpg';a.click();};
-document.getElementById('fondosDel').onclick=()=>{if(!fondosCurItem||!confirm('¿Borrar?'))return;fondosItems=fondosItems.filter(i=>i.id!==fondosCurItem.id);saveFondos();document.getElementById('fondosModal').classList.remove('open');renderFondos();};
-document.getElementById('fondosUp').addEventListener('click',()=>{
-  const files=[...document.getElementById('fondosFile').files];
-  const cats=document.getElementById('fondosCats').value.split(',').map(s=>s.trim().toLowerCase()).filter(Boolean);
-  if(!files.length||!cats.length){document.getElementById('fondosMsg').textContent='Elegí imágenes y escribí categorías.';return;}
-  document.getElementById('fondosMsg').textContent='Subiendo...';let n=0;
-  const compressFondo=(f)=>new Promise(res=>{
-    const r2=new FileReader();
-    r2.onload=ev=>{
-      const img=new Image();
-      img.onload=()=>{
-        let w=img.width,h=img.height;
-        const maxW=480,maxH=800;
-        if(w>maxW||h>maxH){const s=Math.min(maxW/w,maxH/h);w=Math.round(w*s);h=Math.round(h*s);}
-        const c=document.createElement('canvas');c.width=w;c.height=h;
-        c.getContext('2d').drawImage(img,0,0,w,h);
-        res(c.toDataURL('image/jpeg',0.65));
-      };
-      img.src=ev.target.result;
-    };
-    r2.readAsDataURL(f);
-  });
-  let processed=0;
-  files.forEach(f=>{
-    compressFondo(f).then(dataUrl=>{
-      fondosItems.unshift({id:'f'+Date.now()+'_'+processed,src:dataUrl,cats,created:Date.now()});
-      processed++;
-      saveFondos();
-      if(processed===files.length){
-        document.getElementById('fondosMsg').textContent=processed+' fondo(s) subido(s) ✅';
-        document.getElementById('fondosFile').value='';
-        renderFondos();
-      }
-    });
-  });
-});
-document.getElementById('fondosQ').oninput=renderFondos;
 
 // HEARTS
 (function(){
@@ -1179,7 +1125,7 @@ const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isInt
 document.querySelectorAll('.card,.step').forEach(el=>{el.style.opacity='0';el.style.transform='translateY(20px)';el.style.transition='opacity .5s ease,transform .5s ease,background .25s,color .25s,box-shadow .2s';observer.observe(el);});
 
 renderTienda();
-renderFondos();
+mostrarEspacio();
 
 </script>
 </body>
