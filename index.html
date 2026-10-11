@@ -814,6 +814,10 @@ if(tiendaSearchEl)tiendaSearchEl.addEventListener('input',renderTienda);
 // Carrito en top bar de tienda
 const cartBtnTienda=document.getElementById('cartBtnTienda');
 if(cartBtnTienda)cartBtnTienda.addEventListener('click',()=>{renderCart();document.getElementById('cartModal').classList.add('open');});
+// ---- CLOUDINARY CONFIG ----
+const CLOUDINARY_CLOUD='nr2uw42a';
+const CLOUDINARY_PRESET='Micaela';
+
 const compressImg=(f,maxW,maxH,quality)=>new Promise(res=>{
   const r2=new FileReader();
   r2.onload=ev=>{
@@ -829,6 +833,19 @@ const compressImg=(f,maxW,maxH,quality)=>new Promise(res=>{
   };
   r2.readAsDataURL(f);
 });
+
+// Subir imagen a Cloudinary y devolver URL segura
+async function uploadToCloudinary(file){
+  const fd=new FormData();
+  fd.append('file',file);
+  fd.append('upload_preset',CLOUDINARY_PRESET);
+  try{
+    const r=await fetch('https://api.cloudinary.com/v1_1/'+CLOUDINARY_CLOUD+'/image/upload',{method:'POST',body:fd});
+    const d=await r.json();
+    if(d.secure_url)return d.secure_url;
+  }catch(e){}
+  return null;
+}
 // Recomprimir base64 ya guardado a menor calidad
 function recompressB64(b64,maxW,maxH,quality){return new Promise(res=>{
   const img=new Image();
@@ -843,13 +860,17 @@ function recompressB64(b64,maxW,maxH,quality){return new Promise(res=>{
   img.src=b64;
 });}
 async function emergencyCompress(){
-  // Recomprimir todas las fotos a calidad muy baja para liberar espacio
+  // Recomprimir solo fotos base64 (no tocar URLs de Cloudinary)
   for(const p of productos){
     if(p.fotos&&p.fotos.length){
-      const nuevas=[];for(const f of p.fotos)nuevas.push(await recompressB64(f,220,220,0.25));
+      const nuevas=[];
+      for(const f of p.fotos){
+        if(f.startsWith('data:')){nuevas.push(await recompressB64(f,320,320,0.4));}
+        else{nuevas.push(f);} // URL de Cloudinary, no tocar
+      }
       p.fotos=nuevas;p.foto=nuevas[0]||'';
-    } else if(p.foto){
-      p.foto=await recompressB64(p.foto,220,220,0.25);
+    } else if(p.foto&&p.foto.startsWith('data:')){
+      p.foto=await recompressB64(p.foto,320,320,0.4);
     }
   }
 }
@@ -876,12 +897,19 @@ document.getElementById('prodGuardar').addEventListener('click',async()=>{
   const files=[...document.getElementById('prodFoto').files].slice(0,3);
   const editId=document.getElementById('editId').value;
   if(!nombre||!precio){document.getElementById('prodMsg').textContent='Completá nombre y precio.';return;}
-  document.getElementById('prodMsg').textContent='Guardando...';
+  document.getElementById('prodMsg').textContent='⏳ Subiendo fotos...';
   let fotos=[];
   if(files.length){
     for(const f of files){
-      const data=await compressImg(f,280,280,0.3);
-      fotos.push(data);
+      // Intentar subir a Cloudinary primero
+      const url=await uploadToCloudinary(f);
+      if(url){
+        fotos.push(url);
+      } else {
+        // Fallback: comprimir y guardar en localStorage
+        const data=await compressImg(f,420,420,0.5);
+        fotos.push(data);
+      }
     }
   }
   const opciones=getAdminOpciones();
